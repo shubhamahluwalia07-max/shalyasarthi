@@ -6,6 +6,15 @@ import socket
 import webbrowser
 from pathlib import Path
 
+# Add portable Node to PATH if present in the workspace
+root_dir = Path(__file__).parent.resolve()
+portable_node_parent = root_dir / ".node_portable"
+if portable_node_parent.exists():
+    for path in portable_node_parent.iterdir():
+        if path.is_dir() and ((path / "node.exe").exists() or (path / "node").exists()):
+            os.environ["PATH"] = str(path.resolve()) + os.pathsep + os.environ.get("PATH", "")
+            break
+
 # Color codes for clean terminal output
 GREEN = "\033[92m"
 YELLOW = "\033[93m"

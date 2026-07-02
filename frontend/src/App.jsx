@@ -137,17 +137,31 @@ export default function App() {
 
   // --- INITIALIZATION ---
   useEffect(() => {
-    // Loading static list of implants directly instead of from a backend
-    const staticImplants = [
-      "Big flat_000.stl",
-      "Big rod_000.stl",
-      "Big_000.stl",
-      "Medium_000.stl",
-      "Small rod_000.stl",
-      "small flat_000.stl",
-      "small_000.stl"
-    ];
-    setImplantList(staticImplants);
+    const fetchImplants = async () => {
+      try {
+        const response = await fetch('/api/implants');
+        if (response.ok) {
+          const data = await response.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setImplantList(data);
+            return;
+          }
+        }
+      } catch (err) {
+        console.warn("Failed to fetch implants from backend API, falling back to static list:", err);
+      }
+      // Fallback if API is unavailable or empty
+      setImplantList([
+        "Big flat_000.stl",
+        "Big rod_000.stl",
+        "Big_000.stl",
+        "Medium_000.stl",
+        "Small rod_000.stl",
+        "small flat_000.stl",
+        "small_000.stl"
+      ]);
+    };
+    fetchImplants();
   }, []);
 
   // --- HISTORY LOGIC ---
